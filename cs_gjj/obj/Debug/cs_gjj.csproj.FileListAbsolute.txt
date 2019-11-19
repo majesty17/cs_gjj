@@ -1,0 +1,10 @@
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.csprojAssemblyReference.cache
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.Form1.resources
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.Properties.Resources.resources
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.csproj.GenerateResource.cache
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.csproj.CoreCompileInputs.cache
+E:\git\cs_gjj\cs_gjj\bin\Debug\cs_gjj.exe.config
+E:\git\cs_gjj\cs_gjj\bin\Debug\cs_gjj.exe
+E:\git\cs_gjj\cs_gjj\bin\Debug\cs_gjj.pdb
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.exe
+E:\git\cs_gjj\cs_gjj\obj\Debug\cs_gjj.pdb
