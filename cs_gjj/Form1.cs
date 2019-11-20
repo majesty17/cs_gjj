@@ -13,7 +13,7 @@ namespace cs_gjj
 {
     public partial class Form1 : Form
     {
-
+        private double allinterest = 0.0;
 
         Dictionary<int, int> changeValue = new Dictionary<int, int>();
 
@@ -32,7 +32,7 @@ namespace cs_gjj
                 comboBox_years.Items.Add(new ComboxItem(i + "年（" + (i * 12) + "期）", i));
             }
             comboBox_years.SelectedIndex = 14;
-            textBox_rate.Text = "3.75";
+            textBox_rate.Text = "3.25";
             textBox_newvalue.Text = "5568";
 
 
@@ -77,16 +77,41 @@ namespace cs_gjj
         //计算
         private void button_cal_Click(object sender, EventArgs e)
         {
-            int all_loan = Convert.ToInt32(textBox_loan.Text);
-            int term = ((ComboxItem)comboBox_years.SelectedItem).Value;
+            allinterest = 0.0;
+            textBox_detail.Clear();
+            int all_loan = Convert.ToInt32(textBox_loan.Text) * 10000;
+            int term = ((ComboxItem)comboBox_years.SelectedItem).Value * 12;
+            double rate = Convert.ToDouble(textBox_rate.Text) / 100.0;
+            double pay = Convert.ToDouble(textBox_newvalue.Text);
+            double balance = all_loan;
+            for (int i = 1; i <= term - 1; i++)
+            {
+                balance = cal(balance, rate / 12.0, pay);
+            }
 
+            double last_interest = balance * rate / 12.0;
+            allinterest += last_interest;
+            double last_pay = balance + last_interest;
+            Console.WriteLine("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0" );
+            textBox_detail.AppendText("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0\r\n");
+            
+
+            //Console.WriteLine("all interest:" + allinterest);
+            Console.WriteLine("利息总和:" + (last_pay + (term - 1) * pay - all_loan));
+            textBox_detail.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan)+ "\r\n");
         }
 
 
 
-        private double cal(double banlance, double month_rate, double pay)
+        private double cal(double balance, double month_rate, double pay)
         {
-            return 0.0;
+            //month_rate = 0.00270833;
+            double interest = balance * month_rate;//Math.Floor(balance * month_rate * 100.0) / 100.0;
+            allinterest = allinterest + interest;
+            double new_balance = balance - (pay - interest);
+            Console.WriteLine("交款:" + pay + "   利息:" + interest + "  剩余：" + new_balance);
+            textBox_detail.AppendText("交款:" + pay + "   利息:" + interest + "  剩余：" + new_balance + "\r\n");
+            return new_balance;
         }
     }
 
