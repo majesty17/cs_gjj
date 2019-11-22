@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBox_plan = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,8 +48,13 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.listBox_newvalues = new System.Windows.Forms.ListBox();
             this.button_cal = new System.Windows.Forms.Button();
-            this.textBox_detail = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.listView_detail = new System.Windows.Forms.ListView();
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.textBox_summary = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_1)).BeginInit();
@@ -55,6 +63,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBox_plan);
+            this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
@@ -65,10 +75,39 @@
             this.groupBox1.Controls.Add(this.textBox_loan);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(187, 114);
+            this.groupBox1.Size = new System.Drawing.Size(254, 149);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "基本配置";
+            // 
+            // comboBox_plan
+            // 
+            this.comboBox_plan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_plan.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.comboBox_plan.FormattingEnabled = true;
+            this.comboBox_plan.Location = new System.Drawing.Point(65, 109);
+            this.comboBox_plan.Name = "comboBox_plan";
+            this.comboBox_plan.Size = new System.Drawing.Size(183, 20);
+            this.comboBox_plan.TabIndex = 12;
+            this.comboBox_plan.SelectedIndexChanged += new System.EventHandler(this.comboBox_plan_SelectedIndexChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 112);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 12);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "预设方案";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(112, 80);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(11, 12);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "%";
             // 
             // label4
             // 
@@ -139,12 +178,12 @@
             this.groupBox2.Controls.Add(this.textBox_newvalue);
             this.groupBox2.Controls.Add(this.trackBar_1);
             this.groupBox2.Controls.Add(this.label_newvalue);
-            this.groupBox2.Location = new System.Drawing.Point(205, 12);
+            this.groupBox2.Location = new System.Drawing.Point(12, 167);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(205, 114);
+            this.groupBox2.Size = new System.Drawing.Size(254, 121);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "调整额度";
+            this.groupBox2.Text = "自定义方案-调整额度";
             // 
             // label5
             // 
@@ -153,11 +192,11 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 12);
             this.label5.TabIndex = 9;
-            this.label5.Text = "每月还款";
+            this.label5.Text = "新还款额";
             // 
             // button_addnew
             // 
-            this.button_addnew.Location = new System.Drawing.Point(112, 85);
+            this.button_addnew.Location = new System.Drawing.Point(173, 90);
             this.button_addnew.Name = "button_addnew";
             this.button_addnew.Size = new System.Drawing.Size(75, 23);
             this.button_addnew.TabIndex = 3;
@@ -176,7 +215,7 @@
             // 
             this.trackBar_1.Location = new System.Drawing.Point(6, 47);
             this.trackBar_1.Name = "trackBar_1";
-            this.trackBar_1.Size = new System.Drawing.Size(193, 45);
+            this.trackBar_1.Size = new System.Drawing.Size(242, 45);
             this.trackBar_1.TabIndex = 1;
             this.trackBar_1.Scroll += new System.EventHandler(this.trackBar_1_Scroll);
             // 
@@ -192,9 +231,9 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.listBox_newvalues);
-            this.groupBox3.Location = new System.Drawing.Point(417, 12);
+            this.groupBox3.Location = new System.Drawing.Point(12, 294);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(234, 113);
+            this.groupBox3.Size = new System.Drawing.Size(254, 267);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "调整记录";
@@ -206,43 +245,77 @@
             this.listBox_newvalues.ItemHeight = 12;
             this.listBox_newvalues.Location = new System.Drawing.Point(3, 17);
             this.listBox_newvalues.Name = "listBox_newvalues";
-            this.listBox_newvalues.Size = new System.Drawing.Size(228, 93);
+            this.listBox_newvalues.Size = new System.Drawing.Size(248, 247);
             this.listBox_newvalues.TabIndex = 0;
             // 
             // button_cal
             // 
-            this.button_cal.Location = new System.Drawing.Point(658, 25);
+            this.button_cal.Location = new System.Drawing.Point(272, 12);
             this.button_cal.Name = "button_cal";
-            this.button_cal.Size = new System.Drawing.Size(83, 97);
+            this.button_cal.Size = new System.Drawing.Size(479, 38);
             this.button_cal.TabIndex = 7;
             this.button_cal.Text = "计算";
             this.button_cal.UseVisualStyleBackColor = true;
             this.button_cal.Click += new System.EventHandler(this.button_cal_Click);
             // 
-            // textBox_detail
+            // listView_detail
             // 
-            this.textBox_detail.Location = new System.Drawing.Point(13, 133);
-            this.textBox_detail.Multiline = true;
-            this.textBox_detail.Name = "textBox_detail";
-            this.textBox_detail.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_detail.Size = new System.Drawing.Size(728, 372);
-            this.textBox_detail.TabIndex = 8;
+            this.listView_detail.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5,
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.listView_detail.FullRowSelect = true;
+            this.listView_detail.GridLines = true;
+            this.listView_detail.Location = new System.Drawing.Point(272, 56);
+            this.listView_detail.Name = "listView_detail";
+            this.listView_detail.Size = new System.Drawing.Size(479, 445);
+            this.listView_detail.TabIndex = 8;
+            this.listView_detail.UseCompatibleStateImageBehavior = false;
+            this.listView_detail.View = System.Windows.Forms.View.Details;
             // 
-            // label6
+            // columnHeader5
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(112, 80);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(11, 12);
-            this.label6.TabIndex = 10;
-            this.label6.Text = "%";
+            this.columnHeader5.Text = "期数";
+            this.columnHeader5.Width = 110;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "还款额";
+            this.columnHeader1.Width = 80;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "利息";
+            this.columnHeader2.Width = 80;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "本金";
+            this.columnHeader3.Width = 80;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "剩余本金";
+            this.columnHeader4.Width = 242;
+            // 
+            // textBox_summary
+            // 
+            this.textBox_summary.Location = new System.Drawing.Point(273, 507);
+            this.textBox_summary.Multiline = true;
+            this.textBox_summary.Name = "textBox_summary";
+            this.textBox_summary.ReadOnly = true;
+            this.textBox_summary.Size = new System.Drawing.Size(478, 50);
+            this.textBox_summary.TabIndex = 9;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(754, 517);
-            this.Controls.Add(this.textBox_detail);
+            this.ClientSize = new System.Drawing.Size(766, 569);
+            this.Controls.Add(this.textBox_summary);
+            this.Controls.Add(this.listView_detail);
             this.Controls.Add(this.button_cal);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -282,8 +355,16 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox_detail;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox comboBox_plan;
+        private System.Windows.Forms.ListView listView_detail;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.TextBox textBox_summary;
     }
 }
 

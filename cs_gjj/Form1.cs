@@ -13,8 +13,16 @@ namespace cs_gjj
 {
     public partial class Form1 : Form
     {
+
+        //总利息
         private double allinterest = 0.0;
 
+        //默认利率
+        private double default_rate_0 = 2.75;
+        private double default_rate_1 = 3.25;
+
+
+        //用户添加的调整值
         Dictionary<int, int> changeValue = new Dictionary<int, int>();
 
         public Form1()
@@ -32,15 +40,24 @@ namespace cs_gjj
                 comboBox_years.Items.Add(new ComboxItem(i + "年（" + (i * 12) + "期）", i));
             }
             comboBox_years.SelectedIndex = 14;
-            textBox_rate.Text = "3.25";
+            textBox_rate.Text = default_rate_1.ToString();
             textBox_newvalue.Text = "5568";
 
 
+            //预设方案
+            comboBox_plan.Items.Clear();
+            comboBox_plan.Items.Add(new ComboxItem("1，默认最低，最后一次还清（默认）", 1));
+            comboBox_plan.Items.Add(new ComboxItem("2，等额本息（每次还款一样）", 2));
+            comboBox_plan.Items.Add(new ComboxItem("3，等额本金（每月还款递减）", 3));
+            comboBox_plan.Items.Add(new ComboxItem("4，每年递减（等额本金变种1）", 4));
+            comboBox_plan.Items.Add(new ComboxItem("5，每季度递减（等额本金变种2）", 5));
+            comboBox_plan.Items.Add(new ComboxItem("6，自定义", 6));
+            comboBox_plan.SelectedIndex = 0;
 
 
         }
 
-        //联动trackbar
+        //联动trackbar、利率、等额本金钱数;
         private void comboBox_years_SelectedIndexChanged(object sender, EventArgs e)
         {
             trackBar_1.Minimum = 1;
@@ -52,7 +69,43 @@ namespace cs_gjj
             listBox_newvalues.Items.Clear();
             changeValue.Clear();
 
+            //联动利率
+            if (ci.Value <= 5)
+            {
+                textBox_rate.Text = default_rate_0.ToString();
+            }else
+            {
+                textBox_rate.Text = default_rate_1.ToString();
+            }
+
+
         }
+
+
+        //预设方案调整
+        private void comboBox_plan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboxItem ci = (ComboxItem)comboBox_plan.SelectedItem;
+            int value = ci.Value;
+
+            if (value <= 5)
+            {
+                textBox_newvalue.Enabled = false;
+                trackBar_1.Enabled = false;
+                listBox_newvalues.Enabled = false;
+                button_addnew.Enabled = false;
+            }
+            else if (value == 6)
+            {
+
+                textBox_newvalue.Enabled = true;
+                trackBar_1.Enabled = true;
+                listBox_newvalues.Enabled = true;
+                button_addnew.Enabled = true;
+            }
+        }
+
+
 
         //显示
         private void trackBar_1_Scroll(object sender, EventArgs e)
@@ -78,41 +131,112 @@ namespace cs_gjj
         private void button_cal_Click(object sender, EventArgs e)
         {
             allinterest = 0.0;
-            textBox_detail.Clear();
+            listView_detail.Items.Clear();
             int all_loan = Convert.ToInt32(textBox_loan.Text) * 10000;
             int term = ((ComboxItem)comboBox_years.SelectedItem).Value * 12;
             double rate = Convert.ToDouble(textBox_rate.Text) / 100.0;
+            double rate_month = rate / 12.0;
             double pay = Convert.ToDouble(textBox_newvalue.Text);
             double balance = all_loan;
-            for (int i = 1; i <= term - 1; i++)
+            textBox_summary.Clear();
+
+            int plan_type = ((ComboxItem)comboBox_plan.SelectedItem).Value;
+
+
+
+            if (plan_type == 1) {
+                //前term-1次，最小值
+                for (int i = 1; i <= term - 1; i++)
+                {
+                    balance = cal(balance, rate_month, pay, i);
+                }
+                //最后一次还剩余的
+                double last_interest = balance * rate_month;
+                allinterest += last_interest;
+                double last_pay = balance + last_interest;
+
+
+                Console.WriteLine("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0");
+                //textBox_detail.AppendText("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0\r\n");
+                ListViewItem lvi = new ListViewItem("第" + string.Format("{0:D3}", term) + "期|第" +
+                string.Format("{0:D2}", (term / 12)) + "年");
+                lvi.SubItems.Add(decimalFormat(last_pay));
+                lvi.SubItems.Add(decimalFormat(last_interest));
+                lvi.SubItems.Add(decimalFormat(last_pay - last_interest));
+                lvi.SubItems.Add(decimalFormat(0f));
+
+                listView_detail.Items.Add(lvi);
+
+
+
+
+                //Console.WriteLine("all interest:" + allinterest);
+                Console.WriteLine("利息总和:" + (last_pay + (term - 1) * pay - all_loan));
+                //textBox_detail.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan) + "\r\n");
+                textBox_summary.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan) + "\r\n");
+            }
+            else if (plan_type==2)
             {
-                balance = cal(balance, rate / 12.0, pay);
+
+                //等额本金: 贷款本金×[月利率×(1+月利率) ^ 还款月数]÷{[(1+月利率) ^ 还款月数]-1}
+                double pay_month = balance * (rate_month * Math.Pow(1.0 + rate_month, term)) /
+                    (Math.Pow(1 + rate_month, term) - 1.0);
+
+                for(int i=1;i<=term;i++)
+                {
+                    ListViewItem lvi = new ListViewItem("第" + string.Format("{0:D3}", term) + "期|第" +
+                        string.Format("{0:D2}", (term / 12)) + "年");
+                    lvi.SubItems.Add(decimalFormat(pay_month));
+                    lvi.SubItems.Add(decimalFormat(1.0));
+                    lvi.SubItems.Add(decimalFormat(1.0));
+                    lvi.SubItems.Add(decimalFormat(0f));
+
+                    listView_detail.Items.Add(lvi);
+                }
+
+                textBox_summary.AppendText("利息总和:" + (pay_month * term - balance) + "\r\n");
             }
 
-            double last_interest = balance * rate / 12.0;
-            allinterest += last_interest;
-            double last_pay = balance + last_interest;
-            Console.WriteLine("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0" );
-            textBox_detail.AppendText("交款(last):" + last_pay + "   利息:" + last_interest + "  剩余：0\r\n");
-            
 
-            //Console.WriteLine("all interest:" + allinterest);
-            Console.WriteLine("利息总和:" + (last_pay + (term - 1) * pay - all_loan));
-            textBox_detail.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan)+ "\r\n");
+
+
         }
 
 
 
-        private double cal(double balance, double month_rate, double pay)
+        private double cal(double balance, double month_rate, double pay,int terms)
         {
             //month_rate = 0.00270833;
             double interest = balance * month_rate;//Math.Floor(balance * month_rate * 100.0) / 100.0;
             allinterest = allinterest + interest;
             double new_balance = balance - (pay - interest);
             Console.WriteLine("交款:" + pay + "   利息:" + interest + "  剩余：" + new_balance);
-            textBox_detail.AppendText("交款:" + pay + "   利息:" + interest + "  剩余：" + new_balance + "\r\n");
+            //textBox_detail.AppendText("交款:" + pay + "   利息:" + interest + "  剩余：" + new_balance + "\r\n");
+
+
+            ListViewItem lvi = new ListViewItem("第" + string.Format("{0:D3}", terms) + "期|第" +
+                string.Format("{0:D2}", ((terms - 1) / 12) + 1) + "年");
+            lvi.SubItems.Add(decimalFormat(pay));
+            lvi.SubItems.Add(decimalFormat(interest));
+            lvi.SubItems.Add(decimalFormat(pay-interest));
+            lvi.SubItems.Add(decimalFormat(new_balance));
+
+
+
+            listView_detail.Items.Add(lvi);
             return new_balance;
         }
+
+        //double转换为保留两位小数的string
+        private string decimalFormat(double x)
+        {
+            //double ret = Math.Floor(x * 100) / 100.0;
+            //double ret = Math.Round(x, 2);
+            //return Convert.ToString(ret);
+            return string.Format("{0:F2}", x);
+        }
+
+
     }
 
 
