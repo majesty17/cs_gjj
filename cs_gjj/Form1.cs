@@ -42,16 +42,18 @@ namespace cs_gjj
             comboBox_years.SelectedIndex = 14;
             textBox_rate.Text = default_rate_1.ToString();
             textBox_newvalue.Text = "5568";
+            textBox_monthpay.Text = "5568";
 
 
             //预设方案
             comboBox_plan.Items.Clear();
-            comboBox_plan.Items.Add(new ComboxItem("1，默认最低，最后一次还清（默认）", 1));
+            comboBox_plan.Items.Add(new ComboxItem("1，连续固定值，最后一次还清（默认）", 1));
             comboBox_plan.Items.Add(new ComboxItem("2，等额本息（每次还款一样）", 2));
             comboBox_plan.Items.Add(new ComboxItem("3，等额本金（每月还款递减）", 3));
             comboBox_plan.Items.Add(new ComboxItem("4，每年递减（复合型1）", 4));
             comboBox_plan.Items.Add(new ComboxItem("5，每半年递减（复合型2）", 5));
-            comboBox_plan.Items.Add(new ComboxItem("6，自定义", 6));
+            comboBox_plan.Items.Add(new ComboxItem("6，每季度递减（复合型3）", 6));
+            comboBox_plan.Items.Add(new ComboxItem("7，自定义", 7));
             comboBox_plan.SelectedIndex = 0;
 
 
@@ -88,14 +90,14 @@ namespace cs_gjj
             ComboxItem ci = (ComboxItem)comboBox_plan.SelectedItem;
             int value = ci.Value;
 
-            if (value <= 5)
+            if (value <= 6)
             {
                 textBox_newvalue.Enabled = false;
                 trackBar_1.Enabled = false;
                 listBox_newvalues.Enabled = false;
                 button_addnew.Enabled = false;
             }
-            else if (value == 6)
+            else if (value == 7)
             {
 
                 textBox_newvalue.Enabled = true;
@@ -103,6 +105,28 @@ namespace cs_gjj
                 listBox_newvalues.Enabled = true;
                 button_addnew.Enabled = true;
             }
+
+            if (value == 1 || value == 4 || value==5 || value==6)
+            {
+                textBox_monthpay.Enabled = true;
+            }
+            else
+            {
+                textBox_monthpay.Enabled = false;
+            }
+
+
+            if(value==4 || value == 5 || value==6)
+            {
+                label8.Text = "递减额";
+            }
+            else
+            {
+                label8.Text = "月还款额";
+            }
+
+
+
         }
 
 
@@ -132,13 +156,15 @@ namespace cs_gjj
         {
             allinterest = 0.0;
             listView_detail.Items.Clear();
+            textBox_summary.Clear();
+
             int all_loan = Convert.ToInt32(textBox_loan.Text) * 10000;
             int term = ((ComboxItem)comboBox_years.SelectedItem).Value * 12;
             double rate = Convert.ToDouble(textBox_rate.Text) / 100.0;
             double rate_month = rate / 12.0;
-            double pay = Convert.ToDouble(textBox_newvalue.Text);
             double balance = all_loan;
-            textBox_summary.Clear();
+            double month_pay = Convert.ToDouble(textBox_monthpay.Text);
+
 
             int plan_type = ((ComboxItem)comboBox_plan.SelectedItem).Value;
 
@@ -148,7 +174,7 @@ namespace cs_gjj
                 //前term-1次，最小值
                 for (int i = 1; i <= term - 1; i++)
                 {
-                    balance = cal(balance, rate_month, pay, i);
+                    balance = cal(balance, rate_month, month_pay, i);
                 }
                 //最后一次还剩余的
                 double last_interest = balance * rate_month;
@@ -171,9 +197,9 @@ namespace cs_gjj
 
 
                 //Console.WriteLine("all interest:" + allinterest);
-                Console.WriteLine("利息总和:" + (last_pay + (term - 1) * pay - all_loan));
+                Console.WriteLine("利息总和:" + (last_pay + (term - 1) * month_pay - all_loan));
                 //textBox_detail.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan) + "\r\n");
-                textBox_summary.AppendText("利息总和:" + (last_pay + (term - 1) * pay - all_loan) + "\r\n");
+                textBox_summary.AppendText("利息总和:" + (last_pay + (term - 1) * month_pay - all_loan) + "\r\n");
             }
             else if (plan_type==2)
             {
@@ -221,6 +247,27 @@ namespace cs_gjj
                 textBox_summary.AppendText("利息总和2:" + (allinterest) + "\r\n");
             }
 
+            else if(plan_type==4 || plan_type==5 || plan_type==6)
+            {
+                //每x递减
+                int incstep = 12;//每年调整
+                if (plan_type == 5) incstep = 6;//每半年调整
+                if (plan_type == 6) incstep = 3;//每季度调整
+
+                double maxdec = GetMaxDecmoney(balance, rate_month, term, incstep);
+                double mydec = Convert.ToDouble(textBox_monthpay.Text);
+
+                if (mydec>maxdec)
+                {
+                    MessageBox.Show("递减值过大:" + mydec + ">" + maxdec);
+                    return;
+                }
+
+
+                calResultDJ(all_loan, rate_month, term, mydec, incstep);
+
+            }
+
 
 
 
@@ -251,6 +298,105 @@ namespace cs_gjj
             return new_balance;
         }
 
+
+
+        //获取最大还款递减额
+        private double GetMaxDecmoney(double total, double monthrate, int terms, int incstep)
+        {
+
+            double we = terms % incstep;    //这个应该是0
+            int v = terms / incstep;        //有多少个等值块
+
+
+            double tmp1 = (total * monthrate * (Math.Pow(1.0 + monthrate, terms))) / (Math.Pow(1.0 + monthrate, terms) - 1.0);
+            double tmp2 = 1 / (Math.Pow(1 + monthrate, terms) - 1);
+            double tmp3 = Math.Pow(1 + monthrate, we) * (Math.Pow(1 + monthrate, (v + 1) * incstep) - 1) / (Math.Pow(1 + monthrate, incstep) - 1);
+
+            return tmp1 / ((v + 1.0) - tmp2 * (tmp3 - (v + 1.0)));
+        }
+
+
+        //递减还款
+
+        private void calResultDJ(double total,double monthrate,int terms,double decmoney,int incstep)
+        {
+            double capMon, corpusMon, varerestMon;//月供，月供本金，月供利息
+            double capTotle = 0, corpusTotle = 0, varerestTotle = 0;
+            double corpusLeft = total;//还款本金
+            double corpusLeftMon = total;//本金余额
+            //var rate = (parseFloat(yearrate)) / 100 / 12;//月利率
+            //double sbResultDJ;
+            //sbResultDJ = createTable(sbResultDJ);
+            double totalpay22 = 0;
+            double totalrate22 = 0;
+            double monthpay22 = 0;
+            double remain22 = total;
+            for (int k = 1; k <= terms; k++)
+            {
+
+                monthpay22 = GetMonthPayDZ(total, monthrate, terms, k, decmoney, incstep);
+                totalpay22 = totalpay22 + monthpay22;
+
+                //remain22 = remain22 - GetMonthCapital(remain22, monthpay22, yearrate);
+                remain22 = remain22 - (monthpay22-remain22*monthrate);
+
+
+                var ratePow = Math.Pow(monthrate + 1, terms);
+
+                capMon = monthpay22;//月供
+                varerestMon = corpusLeftMon * monthrate;//月供利息
+                corpusMon = capMon - varerestMon;//月供本金
+
+                corpusLeftMon -= corpusMon;//本金余额
+                capTotle += capMon;
+                varerestTotle += varerestMon;
+                corpusTotle += corpusMon;
+
+                //table,期数，月供，月供利息，月供本金，本金余额，利率
+                //sbResultDJ = output(sbResultDJ, k, capMon, varerestMon, corpusMon, corpusLeftMon, rate * 12 * 100);
+                ListViewItem lvi = new ListViewItem("第" + string.Format("{0:D3}", k) + "期|第" +
+                string.Format("{0:D2}", ((k - 1) / 12) + 1) + "年");
+                lvi.SubItems.Add(decimalFormat(monthpay22));
+                lvi.SubItems.Add(decimalFormat(varerestMon));
+                lvi.SubItems.Add(decimalFormat(corpusMon));
+                lvi.SubItems.Add(decimalFormat(corpusLeftMon));
+
+
+
+                listView_detail.Items.Add(lvi);
+            }
+
+
+
+            textBox_summary.Text = "利息总和:" + (varerestTotle) + "\r\n";
+
+
+
+        }
+
+        private double GetMonthPayDZ(double total, double monthrate, int termnum,int currindex, double decmoney,int incsp)
+        {
+            if (currindex > termnum)
+                return 0;
+
+            int we = termnum % incsp;
+            int v = termnum / incsp;
+
+
+            var tmp1 = (total * monthrate * (Math.Pow(1 + monthrate, termnum))) / (Math.Pow(1 + monthrate, termnum) - 1);
+            var tmp2 = -decmoney / (Math.Pow(1 + monthrate, termnum) - 1);
+            var tmp3 = Math.Pow(1 + monthrate, we) * (Math.Pow(1 + monthrate, (v + 1) * incsp) - 1) / (Math.Pow(1 + monthrate, incsp) - 1);
+
+            var A = tmp1 - tmp2 * (tmp3 - (v + 1));
+
+
+            var t = (currindex-1) / incsp + 1;
+
+            return A - t * decmoney;
+
+        }
+
+
         //计算最小还款额度
         private double minPay(double principal,double rate_month,int terms)
         {
@@ -280,6 +426,8 @@ namespace cs_gjj
             return string.Format("{0:F2}", x);
         }
 
+
+        //test
         private void button1_Click(object sender, EventArgs e)
         {
             int all_loan = Convert.ToInt32(textBox_loan.Text) * 10000;
@@ -290,7 +438,10 @@ namespace cs_gjj
             double balance = all_loan;
 
             double min = minPay(all_loan, rate_month, term);
-            MessageBox.Show(min.ToString());
+            //MessageBox.Show(min.ToString());
+
+            double maxdec = GetMaxDecmoney(1200000.0, 3.25 / 100.0 / 12.0, 15 * 12, 12);
+            MessageBox.Show(maxdec+"");
         }
     }
 

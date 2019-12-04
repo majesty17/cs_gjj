@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox_monthpay = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.comboBox_plan = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -40,6 +42,7 @@
             this.comboBox_years = new System.Windows.Forms.ComboBox();
             this.textBox_loan = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.button_addnew = new System.Windows.Forms.Button();
             this.textBox_newvalue = new System.Windows.Forms.TextBox();
@@ -55,7 +58,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.textBox_summary = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_1)).BeginInit();
@@ -64,6 +66,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.textBox_monthpay);
+            this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.comboBox_plan);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
@@ -76,10 +80,26 @@
             this.groupBox1.Controls.Add(this.textBox_loan);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(254, 149);
+            this.groupBox1.Size = new System.Drawing.Size(254, 184);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "基本配置";
+            // 
+            // textBox_monthpay
+            // 
+            this.textBox_monthpay.Location = new System.Drawing.Point(65, 146);
+            this.textBox_monthpay.Name = "textBox_monthpay";
+            this.textBox_monthpay.Size = new System.Drawing.Size(50, 21);
+            this.textBox_monthpay.TabIndex = 14;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 149);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 12);
+            this.label8.TabIndex = 13;
+            this.label8.Text = "月还款额";
             // 
             // comboBox_plan
             // 
@@ -104,7 +124,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(112, 80);
+            this.label6.Location = new System.Drawing.Point(107, 80);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(11, 12);
             this.label6.TabIndex = 10;
@@ -180,12 +200,22 @@
             this.groupBox2.Controls.Add(this.textBox_newvalue);
             this.groupBox2.Controls.Add(this.trackBar_1);
             this.groupBox2.Controls.Add(this.label_newvalue);
-            this.groupBox2.Location = new System.Drawing.Point(12, 167);
+            this.groupBox2.Location = new System.Drawing.Point(12, 211);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(254, 121);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "自定义方案-调整额度";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(66, 90);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label5
             // 
@@ -233,9 +263,9 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.listBox_newvalues);
-            this.groupBox3.Location = new System.Drawing.Point(12, 294);
+            this.groupBox3.Location = new System.Drawing.Point(12, 338);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(254, 267);
+            this.groupBox3.Size = new System.Drawing.Size(254, 223);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "调整记录";
@@ -247,7 +277,7 @@
             this.listBox_newvalues.ItemHeight = 12;
             this.listBox_newvalues.Location = new System.Drawing.Point(3, 17);
             this.listBox_newvalues.Name = "listBox_newvalues";
-            this.listBox_newvalues.Size = new System.Drawing.Size(248, 247);
+            this.listBox_newvalues.Size = new System.Drawing.Size(248, 203);
             this.listBox_newvalues.TabIndex = 0;
             // 
             // button_cal
@@ -311,16 +341,6 @@
             this.textBox_summary.Size = new System.Drawing.Size(478, 50);
             this.textBox_summary.TabIndex = 9;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(66, 90);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -378,6 +398,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.TextBox textBox_summary;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox_monthpay;
     }
 }
 
